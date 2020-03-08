@@ -3,6 +3,7 @@ sources = [
 ]
 
 dependencies = [
+    ncnet_dep,
 ]
 
 executable('kobla-base-client', sources, dependencies : dependencies)
