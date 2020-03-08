@@ -2,4 +2,7 @@ sources = [
     'kobla-base-server.cpp',
 ]
 
-executable('kobla-base-server', sources)
+dependencies = [
+]
+
+executable('kobla-base-server', sources, dependencies : dependencies)
