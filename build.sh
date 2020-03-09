@@ -2,8 +2,12 @@
 ./check_dep.sh
 
 # Build
-rm -rf build
-mkdir -p build && cd build
-meson ..
+if [ ! -d build ]; then
+    mkdir -p build && cd build
+    meson ..
+    cd ..
+fi
+
+cd build
 ninja
 cd ..
