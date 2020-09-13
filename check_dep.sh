@@ -11,9 +11,10 @@ reset_dep() {
     [ -f CMakeLists.txt ] || { echo Only CMake is supported for now, skipping; return 1; }
     # Build using CMake
     mkdir -p build && cd build
-    cmake -DCMAKE_BUILD_TYPE=Release -G Ninja .. || { echo Failed to configure CMake, skipping; return 1; }
+    cmake -DCMAKE_INSTALL_PREFIX=$2 -G Ninja .. || { echo Failed to configure CMake, skipping; return 1; }
     ninja || { echo Failed to build, skipping; return 1; }
-    sudo ninja install || { echo Failed to install, skipping; return 1; }
+    # Install locally
+    ninja install || { echo Failed to install, skipping; return 1; }
 }
 
 check_dep() {
@@ -37,15 +38,18 @@ check_dep() {
 }
 
 CURRENT=$(pwd)
-EXTERNAL_DIRECTORY=$CURRENT/dep/external
+DEP_DIRECTORY=$CURRENT/dep
+EXTERNAL_DIRECTORY=$DEP_DIRECTORY/external
+EXTERNAL_INSTALL_DIRECTORY=$DEP_DIRECTORY/external-install
 mkdir -p $EXTERNAL_DIRECTORY
+mkdir -p $EXTERNAL_INSTALL_DIRECTORY
 
 for dep in $DEPS; do
     cd $EXTERNAL_DIRECTORY
     # Check git information
     check_dep $dep && continue
     # Reset
-    reset_dep $dep || { echo Failed to reset, aborting; exit 1; }
+    reset_dep $dep $EXTERNAL_INSTALL_DIRECTORY || { echo Failed to reset, aborting; exit 1; }
 done
 
 cd $CURRENT
